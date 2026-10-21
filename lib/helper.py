@@ -8,7 +8,7 @@ def submit_PrintDQ(scratch_path, output_path, data_path, TA_tar_name):
 
     # job resources
     lifetime = str(6)        # hr
-    mem = str(4000)          # MB
+    mem = str(2000)          # MB
     # disk space calculated dynamically (below)
 
     print('\nResource allocation per job:')             
@@ -43,12 +43,12 @@ def submit_PrintDQ(scratch_path, output_path, data_path, TA_tar_name):
     file.write('\n')
 
     file.write('# Calculate required disk space based on input files\n')
-    # dynamic disk allocation: get total size in KB, convert to GB, add buffer (5 GB)
+    # dynamic disk allocation: get total size in KB, convert to GB, multiply by 1.4 and add 5 GB buffer
     file.write('TOTAL_SIZE=$(du -sk ${PROCESSED_FILES_PATH}ProcessedData* 2>/dev/null | awk \'{sum+=$1} END {print sum}\')\n')
-    file.write('DISK_GB=$(echo "scale=0; ($TOTAL_SIZE / 1024 / 1024) + 5" | bc)\n')
+    file.write('DISK_GB=$(echo "scale=0; (1.4 * $TOTAL_SIZE / 1024 / 1024) + 5" | bc)\n') 
     file.write('# Set minimum disk space\n')
-    file.write('if [ $DISK_GB -lt 10 ]; then\n')    # min will be 10 GB
-    file.write('    DISK_GB=10\n')
+    file.write('if [ $DISK_GB -lt 30 ]; then\n')    # min will be 30 GB
+    file.write('    DISK_GB=30\n')
     file.write('fi\n')
     file.write('echo "   - disk space = ${DISK_GB}GB"\n')
     file.write('\n')
@@ -58,7 +58,7 @@ def submit_PrintDQ(scratch_path, output_path, data_path, TA_tar_name):
     file.write('echo ""\n')
     file.write('\n')
 
-    file.write('jobsub_submit --memory=' + mem + 'MB --expected-lifetime=' + lifetime + 'h -G annie --disk=${DISK_GB}GB ')
+    file.write('jobsub_submit --memory=' + mem + 'MB --lines=+FERMIHTC_AutoRelease=True --lines=+FERMIHTC_GraceMemory=2000 --expected-lifetime=' + lifetime + 'h -G annie --disk=${DISK_GB}GB ')
 
     # use OFFSITE resources
     file.write('--resource-provides=usage_model=OFFSITE --blacklist=Omaha,Swan,Wisconsin,RAL ')
@@ -113,8 +113,8 @@ def grid_PrintDQ(user, TA_tar_name, TA_folder, scratch_path):
     file.write('echo "" >> ${DUMMY_OUTPUT_FILE} \n')
     file.write('\n')
     
-    file.write('# Copy datafiles from $CONDOR_INPUT onto worker node (/srv)\n')
-    file.write('${JSB_TMP}/ifdh.sh cp -D $CONDOR_DIR_INPUT/ProcessedData* .\n')
+    file.write('# Move datafiles from $CONDOR_INPUT onto worker node (/srv)\n')
+    file.write('mv $CONDOR_DIR_INPUT/ProcessedData* .\n')
     file.write('${JSB_TMP}/ifdh.sh cp -D $CONDOR_DIR_INPUT/' + TA_tar_name + ' .\n')
     file.write('\n')
 
@@ -277,23 +277,3 @@ def is_there_data(runs_to_run_user, data_path):
         else:
             print('Run ' + runs_to_run_user[i] + ' was not processed!!! Removing from the list')
     return temp_runs
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
