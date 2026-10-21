@@ -70,7 +70,8 @@ def plot_figure(run_numbers, metric, rate, error, color, ylim, nominal, nominal_
     if nominal:
         plt.axhline(nominal_val, linestyle = 'dashed', color = 'k', zorder = 1)
     
-    plt.ylim(ylim)
+    if ylim:
+        plt.ylim(ylim) 
     plt.title(metric)
     plt.xlabel('Run Number')
     
@@ -110,7 +111,8 @@ metrics_data = extract_metrics(csv_dir)
 # grab all metric names
 metrics = set(metric['Metric'] for metric in metrics_data)
 colors = ['grey', 'navy', 'blue', 'indianred', 'darkorange', 'purple', '#B8860B',
-           'dodgerblue', 'red', 'tomato', 'darkgreen', 'steelblue', 'green', 'darkred']
+           'dodgerblue', 'red', 'tomato', 'darkgreen', 'steelblue', 'green', 'darkred',
+           'teal']
 
 print('\n')
 count = 0
@@ -130,7 +132,7 @@ for metric_name in metrics:
                 rate.append(metric['Rate'])
                 error.append(metric['Rate Error'])
 
-        nominal=False; nominal_val = 0
+        nominal=False; nominal_val = 0; ylim = None
 
         if metric_name == 'Beam OK' or metric_name == 'Has BRF Fit':
             ylim=(-5, 105)
@@ -154,6 +156,9 @@ for metric_name in metrics:
             ylim=(-0.05,1.25)
         elif metric_name == 'Tank+MRD+Veto Coinc':
             ylim=(-0.02,0.35)
+        elif metric_name == 'Pass PPS quality':
+            ylim=(-5, 105)
+            nominal=True; nominal_val = 100
         elif metric_name == 'Total Clusters (rate given as clusters / event)':
             plot_figure(
                 run_numbers=run_numbers,
