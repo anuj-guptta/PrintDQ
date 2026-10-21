@@ -13,12 +13,12 @@ from lib import helper as h
 
 ''' Please modify the following to reflect your working directory '''
 
-user = '<username>'
+user = 'anujgupt'
 
-TA_folder = 'ToolAnalysis/'                       # Folder that was tar-balled (Needs to be the same name as the ToolAnalysis directory in /exp/annie/app that will run TrigOverlap + BeamFetcherV2 toolchains)
+TA_folder = 'myTA/'                               # Folder that was tar-balled (Needs to be the same name as the ToolAnalysis directory in /exp/annie/app that will run TrigOverlap + BeamFetcherV2 toolchains)
 TA_tar_name = 'MyToolAnalysis_grid.tar.gz'        # name of tar-ball
 
-grid_sub_dir = 'PrintDQ_grid/'                    # input grid
+grid_sub_dir = 'PrintDQ/'                         # input grid
 grid_output = 'output/PrintDQ/'                   # output grid
 
 '''@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'''
